@@ -1,6 +1,6 @@
 # **Smart Contract Security Vulnerabilities with ChatGPT**
 
-## * *Vulnerabilities detected by ChatGPT for lottery smart contract in Solidity language.* *
+##  * Vulnerabilities detected by ChatGPT: *
 Overall, the code seems to follow good coding practices and implements necessary security checks. However, there are a few areas that could potentially be improved. Here are some security vulnerabilities that could be present:
 
 Lack of access control in invest() function: Currently, anyone can call the invest() function and deposit funds. While there is a check to prevent the admin from investing, there is no restriction on who can participate in the lottery. This could potentially allow attackers to participate multiple times and increase their chances of winning. To address this, the function could be modified to only allow whitelisted addresses to participate, or a maximum limit on the number of times a participant can enter could be implemented.
