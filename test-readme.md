@@ -1,4 +1,4 @@
-**SYSTEM TESTING
+**SYSTEM TESTING**
 
 Sure, here's an example of how you can perform system testing for the Lottery smart contract:
 
@@ -30,4 +30,4 @@ Expected result: The contract reverts with the correct error message after the f
 Action: A player tries to call the selectWinner() function
 Expected result: The contract reverts with the correct error message.
 
-*These system tests can be written in a testing framework like Mocha and run on a test network like Rinkeby or Kovan to ensure that the contract functions as expected in a real-world scenario.
+*These system tests can be written in a testing framework like Mocha and run on a test network like Rinkeby or Kovan to ensure that the contract functions as expected in a real-world scenario.*
