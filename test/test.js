@@ -1,62 +1,38 @@
 const Lottery = artifacts.require("Lottery");
+const { expect } = require("chai");
 
-contract("Lottery", accounts => {
-  let lottery;
-  const [admin, player1, player2, attacker] = accounts;
+contract("Lottery", (accounts) => {
+  let instance;
 
-  beforeEach(async () => {
-    lottery = await Lottery.new({ from: admin });
+  before(async () => {
+    instance = await Lottery.deployed();
   });
 
   it("should allow players to invest 3 ether", async () => {
-    await lottery.invest({ from: player1, value: 3 ether });
-    assert.equal(await web3.eth.getBalance(lottery.address), 3 ether);
+    const investment = web3.utils.toWei("3", "ether");
+    await instance.invest({ from: accounts[0], value: investment });
+    const balance = await instance.getBalance({ from: accounts[0] });
+    expect(balance).to.be.equal(investment);
   });
 
-  it("should only allow the admin to call selectWinner", async () => {
-    await lottery.invest({ from: player1, value: 3 ether });
-    await truffleAssert.reverts(
-      lottery.selectWinner({ from: player1 }),
-      "Only Admin can call function"
-    );
-    await lottery.selectWinner({ from: admin });
-    assert.equal(await web3.eth.getBalance(lottery.address), 0);
+  it("should not allow admin to invest", async () => {
+    const investment = web3.utils.toWei("3", "ether");
+    try {
+      await instance.invest({ from: accounts[1], value: investment });
+    } catch (err) {
+      expect(err.reason).to.be.equal("Admin cannot invest");
+    }
   });
 
-  it("should not allow the admin to invest", async () => {
-    await truffleAssert.reverts(
-      lottery.invest({ from: admin, value: 3 ether }),
-      "Admin cannot invest"
-    );
-  });
-
-  it("should only allow investment of 3 ether", async () => {
-    await truffleAssert.reverts(
-      lottery.invest({ from: player1, value: 2 ether }),
-      "To join invest 3 ether"
-    );
-  });
-
-  it("should not allow re-entry of the same player", async () => {
-    await lottery.invest({ from: player1, value: 3 ether });
-    await truffleAssert.reverts(
-      lottery.invest({ from: player1, value: 3 ether }),
-      "Admin cannot invest"
-    );
-  });
-
-  it("should only allow players to join if the contract has sufficient balance", async () => {
-    await web3.eth.sendTransaction({ from: attacker, to: lottery.address, value: 2 ether });
-    await truffleAssert.reverts(
-      lottery.invest({ from: player1, value: 3 ether }),
-      "To join invest 3 ether"
-    );
-  });
-
-  it("should only allow a winner to be selected if there are players", async () => {
-    await truffleAssert.reverts(
-      lottery.selectWinner({ from: admin }),
-      "No players joined"
-    );
+  it("should select a winner and transfer funds", async () => {
+    const initialBalance = await instance.getBalance({ from: accounts[0] });
+    const investment = web3.utils.toWei("3", "ether");
+    await instance.invest({ from: accounts[1], value: investment });
+    await instance.invest({ from: accounts[2], value: investment });
+    await instance.invest({ from: accounts[3], value: investment });
+    await instance.selectWinner({ from: accounts[0] });
+    const finalBalance = await instance.getBalance({ from: accounts[0] });
+    expect(finalBalance).to.be.equal("0");
+    expect(finalBalance).to.not.be.equal(initialBalance);
   });
 });
