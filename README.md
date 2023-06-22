@@ -23,7 +23,7 @@ The selectWinner() function transfers the entire balance of the contract to the 
 The contract does not handle errors or exceptions that may occur during execution, which could leave the contract in an unpredictable state or make it vulnerable to attack. For example, if the transfer function fails during the selectWinner() function, the contract will be left with an empty balance, making it impossible to hold future lotteries. The contract should include error handling code that handles these scenarios and ensures that the contract is always in a consistent state.
 
 
-22/06/2023
+*22/06/2023*
 
 Based on the provided smart contract, here are some potential security vulnerabilities and improvements that could be made:
 
