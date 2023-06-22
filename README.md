@@ -21,3 +21,22 @@ The selectWinner() function transfers the entire balance of the contract to the 
 **Lack of Error Handling:**
 
 The contract does not handle errors or exceptions that may occur during execution, which could leave the contract in an unpredictable state or make it vulnerable to attack. For example, if the transfer function fails during the selectWinner() function, the contract will be left with an empty balance, making it impossible to hold future lotteries. The contract should include error handling code that handles these scenarios and ensures that the contract is always in a consistent state.
+
+
+22/06/2023
+
+Based on the provided smart contract, here are some potential security vulnerabilities and improvements that could be made:
+
+**Randomness:** The current implementation of the random() function may not provide a truly random number. Using block.timestamp and block.difficulty for generating randomness can be manipulated by miners to some extent. Consider using an external source of randomness or implementing a more secure random number generation algorithm.
+
+**Lack of Access Control:** While the contract has an onlyAdmin modifier to restrict certain functions to the contract owner, it doesn't prevent others from calling functions like invest(). You should add additional access control modifiers to limit certain functions only to specific roles, such as restricting the invest() function to non-admin participants.
+
+**Denial of Service (DoS):** The selectWinner() function does not have any limit on the number of players participating in the lottery. If a large number of players join the lottery, it could lead to an out-of-gas error, preventing the winner selection. Consider implementing a limit on the number of players or splitting the selection process into multiple transactions if needed.
+
+**Lack of Validation:** The contract doesn't perform sufficient validation on inputs. For example, in the invest() function, it only checks if the sender is the admin and doesn't validate the value sent. Consider adding additional checks to ensure that inputs meet the expected requirements.
+
+**Handling of Funds:** The contract assumes that the winner will always claim their prize. If the winner fails to call the selectWinner() function or refuses to withdraw the funds, the funds will be locked in the contract indefinitely. Consider implementing a mechanism to handle unclaimed funds or allow the admin to withdraw unclaimed prizes after a certain period of time.
+
+**Lack of Error Handling:** The contract doesn't handle potential errors in functions such as transfer() when sending funds to the winner. If the transfer fails, it could leave the contract in an inconsistent state. Consider using the send() or transfer() functions with proper error handling or using a more robust withdrawal pattern.
+
+Remember that security is a complex topic, and it's always recommended to consult with security professionals and conduct thorough testing, including third-party audits, to ensure the solidity contract is secure and robust.
